@@ -14,19 +14,19 @@ void pwm_ini(int servo_num)
 	{
 		case SERVO_0:
 		pwm_init(&pwm_servo0, PWM_TCD0, PWM_CH_A, 50);
-		pwm_start(&pwm_servo0, 7.5);
+		pwm_start(&pwm_servo0, 3.4);
 		break;
 		case SERVO_1:
 		pwm_init(&pwm_servo1, PWM_TCD0, PWM_CH_B, 50);
-		pwm_start(&pwm_servo1, 7.5);
+		pwm_start(&pwm_servo1, 10);
 		break;
 		case SERVO_2:
 		pwm_init(&pwm_servo2, PWM_TCD1, PWM_CH_A, 50);
-		pwm_start(&pwm_servo2, 7.5);
+		pwm_start(&pwm_servo2, 6);
 		break;
 		case SERVO_3:
 		pwm_init(&pwm_servo3, PWM_TCD1, PWM_CH_B, 50);
-		pwm_start(&pwm_servo3, 7.5);
+		pwm_start(&pwm_servo3, 10);
 		break;
 	}
 

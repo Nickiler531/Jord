@@ -24,8 +24,9 @@ void init_octopus(void)
 	pwm_ini(SERVO_1);
 	pwm_ini(SERVO_2);
 	pwm_ini(SERVO_3);
+	pwm_update(SERVO_2,52);
 	
-	usb_init();	
+	//usb_init();	
 	
 }
 

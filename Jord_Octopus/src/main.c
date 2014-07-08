@@ -81,11 +81,50 @@ void initial_animation(void)
 #define SENS_IR IO_5
 #define SENS_METAL IO_6
 
+// void servo_test(void)
+// {
+// 	int pos;
+// 	scanf("%3i",&pos);
+// 	pwm_update(SERVO_2,pos);
+// }
+void rotate_left(void);
 void servo_test(void)
 {
 	int pos;
-	scanf("%3i",&pos);
-	pwm_update(SERVO_0,pos);
+	scanf("%1i",&pos);
+	
+	if(pos==9)
+	{
+		rotate_left();
+	}
+	else if(pos==1)
+	{
+		pwm_update(SERVO_0,75);
+		pwm_update(SERVO_1,45);
+	}
+	else if(pos==2)
+	{
+		pwm_update(SERVO_2,110);
+	}
+	else if(pos==3)
+	{
+		pwm_update(SERVO_3,35);
+	}
+	else if(pos==3)
+	{
+		pwm_update(SERVO_3,35);
+	}
+	else if(pos==4)
+	{
+		pwm_update(SERVO_3,105);
+	}
+	else
+	{
+		pwm_update(SERVO_0,34);
+		pwm_update(SERVO_1,100);
+		pwm_update(SERVO_2,48);
+	}
+	
 	
 }
 
@@ -269,14 +308,26 @@ void remote_controlled(void)
 	}
 }
 
-
-#define MOVE_CENTER move(100,100)
-#define MOVE_LEFT1 move(100,90)
-#define MOVE_LEFT2 move(100,80)
-#define MOVE_LEFT3 move(100,55)
-#define MOVE_RIGTH1 move(90,100)
-#define MOVE_RIGTH2 move(80,100)
-#define MOVE_RIGHT3 move(55,100)
+// FAST
+// #define MOVE_CENTER move(100,100)
+// #define MOVE_LEFT1 move(100,90)
+// #define MOVE_LEFT2 move(100,80)
+// #define MOVE_LEFT3 move(100,55)
+// #define MOVE_RIGTH1 move(90,100)
+// #define MOVE_RIGTH2 move(80,100)
+// #define MOVE_RIGHT3 move(55,100)
+// #define ROT_LEFT move(100,-99)
+// #define ROT_RIGHT move(-99, 100)
+//SLOW
+#define MOVE_CENTER move(60,60)
+#define MOVE_LEFT1 move(60,50)
+#define MOVE_LEFT2 move(60,40)
+#define MOVE_LEFT3 move(60,30)
+#define MOVE_RIGTH1 move(50,60)
+#define MOVE_RIGTH2 move(40,60)
+#define MOVE_RIGHT3 move(30,60)
+#define ROT_LEFT move(60,-60)
+#define ROT_RIGHT move(-60, 60)
 
 void rotate_left(void)
 {
@@ -288,12 +339,13 @@ void rotate_left(void)
 	int sens_RRR=ioport_get_pin_level(SENS6);
 	
 	while(ioport_get_pin_level(SENS5) == 1 || ioport_get_pin_level(SENS6) == 1);
-	move(100,-99);
+	ROT_LEFT;
 	delay_ms(800);
-	while(ioport_get_pin_level(SENS3) == 0 && ioport_get_pin_level(SENS2) == 0);
+	while(ioport_get_pin_level(SENS3) == 0 && ioport_get_pin_level(SENS4) == 0);
 	
-	move(80,60);
-	delay_ms(100);
+	//move(80,60);
+	move(0,0);
+	delay_ms(1000);
 }
 
 void rotate_rigth(void)
@@ -305,13 +357,14 @@ void rotate_rigth(void)
 	int sens_LLL=ioport_get_pin_level(SENS5);
 	int sens_RRR=ioport_get_pin_level(SENS6);
 	
-	while(ioport_get_pin_level(SENS5) == 1 || ioport_get_pin_level(SENS6) == 1);
-	move(-99,100);
+	while(ioport_get_pin_level(SENS5) == 1 || ioport_get_pin_level(SENS6) == 1 );
+	ROT_RIGHT;
 	delay_ms(800);
-	while(ioport_get_pin_level(SENS1) == 0 && ioport_get_pin_level(SENS4) == 0);
+	while(ioport_get_pin_level(SENS1) == 0 && ioport_get_pin_level(SENS4) == 0 && ioport_get_pin_level(SENS3));
 	
-	move(60,80);
-	delay_ms(100);
+	//move(60,80);
+	move(0,0);
+	delay_ms(1000);
 }
 
 void show_sens(void)
@@ -331,11 +384,49 @@ void show_sens(void)
 }
 
 
+void claw_up(void)
+{
+	pwm_update(SERVO_2,115);
+}
+void claw_down(void)
+{
+	pwm_update(SERVO_2,52);
+}
+void claw_pick(void)
+{
+	pwm_update(SERVO_2,47);
+}
+void hands_close(void)
+{
+	pwm_update(SERVO_0,80);
+	pwm_update(SERVO_1,45);
+}
+void hands_open(void)
+{
+	pwm_update(SERVO_0,34);
+	pwm_update(SERVO_1,100);
+}
+void hands_stand(void)
+{
+	pwm_update(SERVO_0,65);
+	pwm_update(SERVO_1,55);
+}
+
+void class_plastic(void)
+{
+	pwm_update(SERVO_3,35);
+}
+void class_metal(void)
+{
+	pwm_update(SERVO_3,105);
+}
+
 
 void test_ir_metal(void)
 {
 	
 	ioport_set_pin_level(LED5,ioport_get_pin_level(SENS_IR));
+	ioport_set_pin_level(LED4,ioport_get_pin_level(SENS_IR));
 	ioport_set_pin_level(LED6,ioport_get_pin_level(SENS_METAL));
 }
 
@@ -353,8 +444,37 @@ enum{
 	RECOGER_ADELANTE
 };
 
+void pick(void)
+{
+	class_plastic();
+	move(50,50);
+	while (ioport_get_pin_level(SENS_IR) == 0);
+	move(0,0);
+	claw_pick();
+	hands_close();
+	int aux=0;
+	for(int i=0;i<1000;i++)
+	{
+		if (ioport_get_pin_level(SENS_METAL)==1)
+		{
+			class_metal();
+		}
+		delay_ms(1);
+	}
+	delay_ms(1000);
+	hands_stand();
+	delay_ms(500);
+	hands_open();
+	delay_ms(500);
+	claw_up();
+	delay_ms(1500);
+	claw_down();
+	delay_s(5);
+	
 
-void follow(int * cont, int * inst)
+}
+
+void follow(int * cont, int * inst,int * schmit)
 {
 	int sens_LL=ioport_get_pin_level(SENS1);
 	int sens_RR=ioport_get_pin_level(SENS2);
@@ -398,26 +518,29 @@ void follow(int * cont, int * inst)
 		MOVE_RIGHT3;
 	}
 	
-	
-	if(sens_LLL==1 || sens_RRR==1)
+	if (*schmit>100)
 	{
-		switch (inst[*cont])
+		if( (sens_LLL==1 || sens_RRR==1 ) )
 		{
-			case ADELANTE:
-			move_adelante();
-			break;
-			case DERECHA:
-				rotate_rigth();
-			break;
-			case IZQUIERDA:
-				rotate_left();
-			break;
+			*schmit=0;
+			switch (inst[*cont])
+				{
+				 			case ADELANTE:
+				 			move_adelante();
+				 			break;
+				 			case DERECHA:
+				 				rotate_rigth();
+				 			break;
+				 			case IZQUIERDA:
+				 				rotate_left();
+				 			break;
+				 		}
+				 		*cont+=1;
 		}
-		*cont+=1;
 	}
 	
-	
 	delay_ms(10);
+	*schmit+=1;
 }
 
 
@@ -435,20 +558,16 @@ int main (void)
 	ioport_set_pin_dir(SENS_IR,IOPORT_DIR_INPUT);
 	ioport_set_pin_dir(SENS_METAL,IOPORT_DIR_INPUT);
 	
-	int instrucciones[10]={ADELANTE,IZQUIERDA,IZQUIERDA,ADELANTE};
+	int instrucciones[10]={ADELANTE,ADELANTE,ADELANTE,DERECHA,ADELANTE,DERECHA,DERECHA,DERECHA,DERECHA,DERECHA};
+	//int instrucciones[10]={ADELANTE,ADELANTE,IZQUIERDA,ADELANTE};
 	int contador=0;
+	int schmit=0;
  	initial_animation();
-// 	for(;;)
-// 	{
-// 		servo_test();
-// 	}
-	while(switch_state(SW2)==1)
-	{
-		show_sens();
-	}
+	 initial_animation();
+	 initial_animation();
 	for(;;)
 	{
-		follow(&contador,&instrucciones);
+		follow(&contador,&instrucciones,&schmit);
 	}
 }
 
